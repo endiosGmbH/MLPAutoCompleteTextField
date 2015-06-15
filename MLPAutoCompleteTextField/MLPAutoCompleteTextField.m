@@ -435,9 +435,10 @@ withAutoCompleteString:(NSString *)string
                                    willShowAutoCompleteTableView:self.autoCompleteTableView];
             }
         }
-        
-        [self.superview bringSubviewToFront:self];
-        [self.superview insertSubview:self.autoCompleteTableView
+
+        UIView* v = self.autoCompleteParentView ? self.autoCompleteParentView : self.superview;
+        [v bringSubviewToFront:self];
+        [v insertSubview:self.autoCompleteTableView
                          belowSubview:self];
         [self.autoCompleteTableView setUserInteractionEnabled:YES];
         if(self.showTextFieldDropShadowWhenAutoCompleteTableIsOpen){
@@ -635,6 +636,8 @@ withAutoCompleteString:(NSString *)string
     [self setAutoCompleteTableOriginOffset:CGSizeMake(0, -18)];
     [self setAutoCompleteScrollIndicatorInsets:UIEdgeInsetsMake(18, 0, 0, 0)];
     [self setAutoCompleteContentInsets:UIEdgeInsetsMake(18, 0, 0, 0)];
+    [self setAutoCompleteTableBorderWidth:1.0];
+    [self setAutoCompleteTableBorderColor:[UIColor colorWithWhite:0.0 alpha:0.25]];
     
     if(self.backgroundColor == [UIColor clearColor]){
         [self setAutoCompleteTableBackgroundColor:[UIColor whiteColor]];
@@ -874,10 +877,6 @@ withAutoCompleteString:(NSString *)string
 
 - (void)didReceiveSuggestions:(NSArray *)suggestions
 {
-    if(suggestions == nil){
-        suggestions = [NSArray array];
-    }
-    
     if(!self.isCancelled){
         
         if(suggestions.count){
